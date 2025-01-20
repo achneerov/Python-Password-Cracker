@@ -1,78 +1,87 @@
-# Brute-Force Password Cracker
+# Password Cracking Efficiency
 
-This Python program performs a brute-force attack to crack a password by trying all possible combinations of characters, starting from 1 character in length and increasing incrementally. It measures the actual time taken to crack the password and displays the number of combinations tested.
+This project demonstrates different techniques for password cracking, comparing their performance using various methods. It includes generating random passwords and cracking them using three different approaches: a slow version, a fast version, and a super-fast version.
 
-## Features
+## Project Structure
 
-- Uses a predefined alphabet of characters.
-- Cracks passwords by generating all possible combinations.
-- Displays the **actual time** taken to crack the password.
-- Tracks and displays the **total number of combinations tested**.
+- **main.py**: This is the main script that attempts to crack passwords using different algorithms.
+- **generate-test-data.py**: This script generates test data for the passwords to be cracked. It creates a list of random passwords and saves them to a file.
+- **test_data.txt**: A file containing randomly generated passwords (created by the `generate-test-data.py` script).
 
-## Requirements
+## How to Run the Project
 
-- Python 3.x or higher.
-- No external dependencies (uses Python's built-in `itertools` and `time` modules).
+### Prerequisites
 
-## Installation
+Ensure you have Python 3 installed on your machine. You also need the following Python libraries:
+- `random`
+- `itertools`
 
-There is no installation required other than Python itself.
+These are built-in libraries, so no additional installations are necessary.
 
-1. Ensure you have Python 3.x installed on your system. You can check this by running:
+### Step-by-Step Instructions
 
-   ```bash
-   python --version
-   ```
-
-2. Clone or download this repository to your local machine.
-
-3. Navigate to the folder containing the Python script.
-
-## Usage
-
-1. Open a terminal or command prompt.
-2. Run the script by executing:
+1. **Generate Test Data**:
+   
+   First, generate the test passwords using the `generate-test-data.py` script. This will create a file called `test_data.txt` with 50 randomly generated passwords of length 3 (you can change the number and length of passwords by modifying the script).
 
    ```bash
-   python brute_force_password_cracker.py
+   python generate-test-data.py
    ```
 
-3. When prompted, enter the password you'd like to test. For example:
+2. **Crack Passwords**:
+   
+   Once the `test_data.txt` file is generated, run the `main.py` script to crack the passwords using the different methods defined in the code.
 
+   ```bash
+   python main.py
    ```
-   Enter your password for testing (it won't be saved): abc
-   ```
 
-   The program will attempt to crack the password using a brute-force method, starting with length 1 combinations and increasing in length. Once the password is found, it will display:
+   The script will:
+   - Read the passwords from `test_data.txt`.
+   - Try to crack each password using the different techniques.
+   - Print the results along with the time taken for each method.
 
-   - The cracked password
-   - The actual time taken to crack the password
-   - The total number of combinations tried
+### Code Explanation
 
-### Example:
+#### `generate-test-data.py`
 
-```bash
-Enter your password for testing (it won't be saved): abc
-Password found: abc
-Actual Time to crack: 0.35 seconds
-Total combinations tried: 731
-```
+- **Function**: Generates random passwords and writes them to a file.
+- **Parameters**:
+  - `file_name`: Name of the file where passwords will be saved (default is `test_data.txt`).
+  - `alphabet`: The character set used to generate passwords (letters and digits).
+  - `target_length`: The length of each password to be generated.
+  - `num_passwords`: The number of passwords to generate.
 
-## How It Works
+#### `main.py`
 
-1. **Alphabet Definition**: The program uses a predefined set of characters, which includes:
-   - Lowercase letters (`a-z`)
-   - Uppercase letters (`A-Z`)
-   - Digits (`0-9`)
-   - Special characters (`!@#$%^&*()`)
+This file contains the following functions:
 
-2. **Brute Force Mechanism**: The program iterates through all possible combinations of characters, starting with 1-character combinations and increasing the length as necessary. It checks each generated string against the target password.
+1. **guess_password**:
+   - Compares the guessed password to the actual password.
+   
+2. **crack_password**:
+   - A slow method that uses a list to store the possible password guesses and checks them one by one.
+   
+3. **crack_password_fast**:
+   - A faster method that uses a deque (double-ended queue) to allow constant time pops from the front, which improves the speed compared to using a list.
+   
+4. **crack_password_superfast**:
+   - The fastest method using `itertools.product` to generate password combinations efficiently on-the-fly. This avoids storing all combinations in memory at once.
 
-3. **Timing**: The program calculates and displays the actual time it takes to crack the password. It also shows the total number of combinations it tested before finding the correct one.
+#### Performance Comparison
 
-4. **Performance**: The time required for cracking depends on the password's length and the number of possible combinations. Longer passwords with a larger set of characters will require significantly more time to crack.
+- **`crack_password`**: The slowest method, using a list and popping from the front (O(n) time complexity per pop).
+- **`crack_password_fast`**: Faster than the previous method, as it uses a deque (O(1) time complexity for pop operations).
+- **`crack_password_superfast`**: The fastest method, using `itertools.product` to generate combinations on-the-fly without storing them, which reduces memory usage and time.
 
-## Limitations
+### Test Results
 
-- **Performance**: This program uses brute-force, meaning it is computationally expensive and slow, especially for longer passwords or larger alphabets.
-- **Password Length**: If the password is very long or contains many characters from a large alphabet, it will take a considerable amount of time to crack.
+- For cracking 50 passwords of length 3, the following times were observed:
+  - `crack_password`: Took **85.12 seconds** due to inefficient popping from a list.
+  - `crack_password_fast`: Took **1.48 seconds**, improved by using a deque for efficient pops.
+  - `crack_password_superfast`: Took **0.08 seconds**, the fastest approach by generating combinations with `itertools.product`.
+
+### Notes
+
+- You can modify the `alphabet`, `target_length`, and `num_passwords` parameters to change the size and complexity of the generated passwords.
+- The algorithms are tested on small datasets, but they can be adapted to handle larger datasets depending on system resources.
