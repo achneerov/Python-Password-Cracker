@@ -1,32 +1,43 @@
-import itertools
 import time
+from collections import deque
 
-# Define the alphabet
-alphabet = "abcdefghijklmnopqrstuvwxyz0123456789"
 
-# Function to generate all possible combinations of increasing length and calculate the actual time
-def crack_password(target_password):
-    length = 1  # Start with length 1
-    total_combinations = 0
-    start_time = time.time()  # Start the clock for actual time
-    
-    while True:
-        # Generate all possible combinations of the current length
-        for combination in itertools.product(alphabet, repeat=length):
-            # Join the tuple into a string and check if it matches the target password
-            guess = ''.join(combination)
-            total_combinations += 1
-            if guess == target_password:
-                end_time = time.time()  # End the clock
-                actual_time_seconds = end_time - start_time  # Actual time in seconds
-                print(f"Password found: {guess}")
-                print(f"Actual Time to crack: {actual_time_seconds:.2f} seconds")
-                print(f"Total combinations tried: {total_combinations}")
-                return guess
-        length += 1  # Increase the length and try again
+alphabet = (
+    "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", 
+    "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "0", "1", "2", "3", 
+    "4", "5", "6", "7", "8", "9"
+)
 
-# Main program
+def guess_password(guess_password, real_password):
+    return guess_password == real_password
+
+def crack_password_slow(password):
+    passwords_to_try = [""]
+    while passwords_to_try:
+        current_guess = passwords_to_try.pop(0)
+        if guess_password(current_guess, password):
+            return current_guess
+        for letter in alphabet:
+            passwords_to_try.append(current_guess + letter)
+
+def crack_password_fast(password):
+    passwords_to_try = deque([""])
+    while passwords_to_try:
+        current_guess = passwords_to_try.popleft()
+        if guess_password(current_guess, password):
+            return current_guess
+        for letter in alphabet:
+            passwords_to_try.append(current_guess + letter)
+
 if __name__ == "__main__":
-    user_password = input("Enter your password for testing (it won't be saved): ")
-    crack_password(user_password)
-    
+    target_func = crack_password_fast
+    file_path = "test_data.txt"
+    with open(file_path, "r") as file:
+        passwords = [line.strip() for line in file]
+    start_time = time.time()
+    for password in passwords:
+        result = target_func(password)
+        print(f"Password: {password}, Cracked: {result}")
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    print(f"Time taken: {elapsed_time:.2f} seconds")
