@@ -2,7 +2,7 @@ import itertools
 import time
 
 # Define the alphabet
-alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()"
+alphabet = "abcdefghijklmnopqrstuvwxyz0123456789"
 
 # Function to generate all possible combinations of increasing length and calculate the actual time
 def crack_password(target_password):
@@ -29,3 +29,4 @@ def crack_password(target_password):
 if __name__ == "__main__":
     user_password = input("Enter your password for testing (it won't be saved): ")
     crack_password(user_password)
+    
